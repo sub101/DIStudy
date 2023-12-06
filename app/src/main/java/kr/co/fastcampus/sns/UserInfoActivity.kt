@@ -30,7 +30,7 @@ import kr.co.fastcampus.sns.ui.theme.FastcampusSNSTheme
  */
 class UserInfoActivity : ComponentActivity() {
 
-    private val localDataSource = UserLocalDataSource(this)
+    private val userLocalDataSource by lazy{ (application as App).appContainer.createUserLocalDataSource()}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,14 +47,14 @@ class UserInfoActivity : ComponentActivity() {
                             LaunchedEffect(Unit){
                                 // localDataSouce에서 토큰 내용을 가져와서 토큰을 text composable로 보여줌
                                 launch {
-                                    token = localDataSource.getToken().orEmpty()
+                                    token = userLocalDataSource.getToken().orEmpty()
                                 }
                             }
                             Text(text = "$token")
                             Spacer(modifier = Modifier.height(20.dp))
                             TextButton(onClick = {
                                 lifecycleScope.launch {
-                                    localDataSource.clear()
+                                    userLocalDataSource.clear()
                                     startActivity(Intent(this@UserInfoActivity, LoginActivity::class.java))
                                     finish()
                                 }
