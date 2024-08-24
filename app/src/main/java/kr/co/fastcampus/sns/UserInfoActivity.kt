@@ -43,8 +43,9 @@ class UserInfoActivity : ComponentActivity() {
                         contentAlignment = Alignment.Center
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            var token by remember { mutableStateOf("") }
+                            var token by remember { mutableStateOf("") } // 토큰 내용 노출
                             LaunchedEffect(Unit){
+                                // localDataSouce에서 토큰 내용을 가져와서 토큰을 text composable로 보여줌
                                 launch {
                                     token = localDataSource.getToken().orEmpty()
                                 }

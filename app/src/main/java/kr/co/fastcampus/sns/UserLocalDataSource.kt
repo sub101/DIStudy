@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /**
- * @author soohwan.ok
+ * Local  Datasource에는 datastore(실제로 토큰 정보를 저장할 위치)를 사용
  */
 private const val USER_PREFERENCES_NAME = "user_preferences"
 private val Context.dataStore by preferencesDataStore(name = USER_PREFERENCES_NAME)
@@ -28,6 +28,7 @@ class UserLocalDataSource constructor(
         context.dataStore.edit { it[KEY_TOKEN] = token }
     }
 
+    // 로그아웃 시 해당 dataStore를 모두 삭제
     suspend fun clear(){
         context.dataStore.edit { it.clear() }
     }

@@ -20,9 +20,14 @@ import kr.co.fastcampus.sns.ui.theme.FastcampusSNSTheme
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 
+/**
+ * [수동 의존성 주입]
+ * - 의존성 주입을 위해 가장 먼저 해야할 것
+ * : Container 만들기 - AppContainer
+ */
 class LoginActivity : ComponentActivity() {
 
-    private val retrofit = Retrofit.Builder()
+    private val retrofit = Retrofit.Builder() // 통신을 하기 위한 retrofit 객체를 만듦
         .baseUrl("http://localhost:8080/api/")
         .addConverterFactory(Json.asConverterFactory("application/json; charset=UTF8".toMediaType()))
         .build()
@@ -32,6 +37,7 @@ class LoginActivity : ComponentActivity() {
     private val remoteDataSource = UserRemoteDataSource(loginRetrofitService)
     private val userDataRepository = UserDataRepository(localDataSource, remoteDataSource)
 
+    // LoginActivity, LoginViewModel에 의존
     private val viewModel: LoginViewModel by viewModels {
         object : AbstractSavedStateViewModelFactory() {
             override fun <T : ViewModel> create(
@@ -48,6 +54,7 @@ class LoginActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                // 로그인 상태 collect
                 viewModel.uiState.collect {
                     when (it.userState) {
                         UserState.NONE -> {
@@ -60,6 +67,7 @@ class LoginActivity : ComponentActivity() {
                         }
 
                         UserState.LOGGED_IN -> {
+                            // 로그인이 되면 UserInfoActivity로 이동
                             startActivity(Intent(this@LoginActivity, UserInfoActivity::class.java))
                             finish()
                         }

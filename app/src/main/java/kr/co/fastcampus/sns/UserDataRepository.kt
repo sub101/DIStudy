@@ -17,9 +17,11 @@ class UserDataRepository constructor(
     }
 
     suspend fun isLoggedIn():Boolean{
+        // localDataSource로 확인해서 실제로 로그인이 되었는지 확인
         return !localDataSource.getToken().isNullOrEmpty()
     }
 
+    // 현재 토큰을 확인하는 메소드
     suspend fun getCurrentToken():String?{
         return localDataSource.getToken()
     }
