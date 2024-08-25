@@ -30,6 +30,7 @@ import kr.co.fastcampus.sns.ui.theme.FastcampusSNSTheme
  */
 class UserInfoActivity : ComponentActivity() {
 
+    // userLocalDataSource, Lazy 패턴으로 Container를 통해 가져오기
     private val userLocalDataSource by lazy{ (application as App).appContainer.createUserLocalDataSource()}
 
     override fun onCreate(savedInstanceState: Bundle?) {
