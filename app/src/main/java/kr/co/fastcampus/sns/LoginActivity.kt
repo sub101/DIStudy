@@ -1,28 +1,43 @@
 package kr.co.fastcampus.sns
 
 import android.content.Intent
+
 import android.os.Bundle
+
 import android.widget.Toast
+
 import androidx.activity.ComponentActivity
+
 import androidx.activity.compose.setContent
+
 import androidx.activity.viewModels
+
 import androidx.compose.runtime.collectAsState
+
 import androidx.lifecycle.Lifecycle
+
 import androidx.lifecycle.lifecycleScope
+
 import androidx.lifecycle.repeatOnLifecycle
+
 import kotlinx.coroutines.launch
+
 import kr.co.fastcampus.sns.ui.theme.FastcampusSNSTheme
 
 class LoginActivity : ComponentActivity() {
-    // container를 초기화할 때 Application에 접근하면 됌
+
     private val container by lazy { (this.application as App).appContainer }
+
     private val viewModel: LoginViewModel by viewModels {
-        // Container로부터 의존성을 얻음
-        container.createLoginViewModelFactory()
+        container.loginContainer!!.createLoginViewModelFactory()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Activity가 생성되는 시점에 loginContainer 생성됌
+        container.loginContainer = LoginContainer(container)
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
@@ -46,6 +61,7 @@ class LoginActivity : ComponentActivity() {
         setContent {
             FastcampusSNSTheme {
                 val uiState = viewModel.uiState.collectAsState().value
+
                 LoginScreen(
                     id = uiState.id,
                     pw = uiState.pw,
@@ -56,5 +72,10 @@ class LoginActivity : ComponentActivity() {
             }
         }
     }
-}
 
+    override fun onDestroy() {
+        // Activity가 종료되면 container 해제
+        container.loginContainer = null
+        super.onDestroy()
+    }
+}
